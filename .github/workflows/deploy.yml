@@ -21,9 +21,9 @@ jobs:
 
       - name: Build y push imagen de backup
         run: |
-          docker build -t carlodiazpor/backup-ev:${{ github.sha }} -t carlodiazpor/backup-ev:1.0 ./backup
+          docker build -t carlodiazpor/backup-ev:${{ github.sha }} -t carlodiazpor/backup-ev:1.1 ./backup
           docker push carlodiazpor/backup-ev:${{ github.sha }}
-          docker push carlodiazpor/backup-ev:1.0
+          docker push carlodiazpor/backup-ev:1.1
 
       - uses: digitalocean/action-doctl@v2
         with:

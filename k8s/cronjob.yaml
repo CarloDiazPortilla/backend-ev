@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: backup
-              image: carlodiazpor/backup-ev:1.0
+              image: carlodiazpor/backup-ev:1.1
               env:
                 - name: S3_PREFIX
                   value: "diaz-carlo/database"
