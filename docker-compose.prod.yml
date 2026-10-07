@@ -1,0 +1,52 @@
+services:
+  app:
+    image: carlodiazpor/backend-ev:${IMAGE_TAG:-latest}
+    ports:
+      - "3000:3000"
+    environment:
+      MY_DATABASE_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER_NAME: ${DB_USER_NAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:?Falta DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-appdb}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER_NAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Falta DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-appdb}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backup:
+    image: carlodiazpor/backup-ev:1.1
+    profiles: ["backup"]
+    environment:
+      MY_DATABASE_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER_NAME: ${DB_USER_NAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:?Falta DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-appdb}
+      S3_PREFIX: apellido-alumno/database-jenkins
+      S3_BUCKET: bucket-codigo-backup-425124975738-us-east-2-an
+      AWS_DEFAULT_REGION: us-east-2
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
