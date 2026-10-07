@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Smoke test') {
             steps {
-                smokeTest(host: params.SERVER_IP, path: '/RUTA_DE_TU_BACKEND')
+                smokeTest(host: params.SERVER_IP, path: '/users')
             }
         }
     }
