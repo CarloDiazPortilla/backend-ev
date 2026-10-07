@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup
+  namespace: backend-ev
+spec:
+  schedule: "0 */3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: carlodiazpor/backup-ev:1.1
+              env:
+                - name: S3_PREFIX
+                  value: "diaz-carlo/database"
+              envFrom:
+                - configMapRef: { name: backend-config }
+                - secretRef: { name: backend-secret }
+                - secretRef: { name: aws-secret }

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: backend-ev
+data:
+  MY_DATABASE_DRIVER: "mysql"
+  DB_HOST: "mysql-svc"
+  DB_USER_NAME: "appuser"
+  DB_NAME: "appdb"
+  DB_PORT: "3306"

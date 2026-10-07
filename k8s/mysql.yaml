@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: backend-ev
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: mysql }
+  template:
+    metadata:
+      labels: { app: mysql }
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: appdb
+            - name: MYSQL_USER
+              value: appuser
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: backend-secret, key: DB_PASSWORD }
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: backend-secret, key: DB_PASSWORD }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+  namespace: backend-ev
+spec:
+  selector: { app: mysql }
+  ports:
+    - port: 3306
+      targetPort: 3306

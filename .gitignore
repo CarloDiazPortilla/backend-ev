@@ -20,3 +20,10 @@ Thumbs.db
 # Build / cobertura
 dist/
 coverage/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
